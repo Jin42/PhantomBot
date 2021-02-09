@@ -194,16 +194,24 @@
      * @returns {string}
      */
     function replaceTags(line) {
+        if ((line.indexOf('(caught)') > -1) && (line.indexOf('(survivors)') > -1)) {
+            return line
+              .replace('(caught)', adventureUsersListJoin(currentAdventure.caught))
+              .replace('(survivors)', adventureUsersListJoin(currentAdventure.survivors))
+              .replace('(players)', adventureUsersListJoin(currentAdventure.users));
+        }
         if (line.indexOf('(caught)') > -1) {
             if (currentAdventure.caught.length > 0) {
-                return line.replace('(caught)', adventureUsersListJoin(currentAdventure.caught));
+                return line.replace('(caught)', adventureUsersListJoin(currentAdventure.caught))
+                  .replace('(players)', adventureUsersListJoin(currentAdventure.users));
             } else {
                 return '';
             }
         }
         if (line.indexOf('(survivors)') > -1) {
             if (currentAdventure.survivors.length > 0) {
-                return line.replace('(survivors)', adventureUsersListJoin(currentAdventure.survivors));
+                return line.replace('(survivors)', adventureUsersListJoin(currentAdventure.survivors))
+                  .replace('(players)', adventureUsersListJoin(currentAdventure.users));
             } else {
                 return '';
             }
