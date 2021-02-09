@@ -54,7 +54,17 @@
         currentAdventure.users = [];
         currentAdventure.survivors = [];
         currentAdventure.caught = [];
+        currentAdventure.groups = {};
+        currentAdventure.groups.default = {};
+        currentAdventure.groups.default.users = [];
+        currentAdventure.groups.default.survivors = [];
+        currentAdventure.groups.default.caught = [];
+        currentAdevnture.groups.difficult = {};
+        currentAdventure.groups.difficult.users = [];
+        currentAdventure.groups.difficult.survivors = [];
+        currentAdventure.groups.difficult.caught = [];
         currentAdventure.gameState = 0;
+        currentAdventure.fixedGroups = false;
 
         stories = [];
 
@@ -286,10 +296,31 @@
         currentAdventure.users.push({
             username: username,
             bet: parseInt(bet),
+            group: "default",
         });
 
         $.inidb.decr('points', username, bet);
         return true;
+    };
+
+    function joinGroup(username, groupName) {
+        if (currentAdventure.fixedGroups)
+          return false;
+        var i;
+        for (i = 0; i < currentAdventure.users.length; i++) {
+            if (currentAdventure.users[i].username.equalsIgnoreCase(username)) {
+                if (groupName.equalsIgnoreCase("default")) {
+                    currentAdventure.users[i].group = "default";
+                    return true;
+                }
+                if (groupName.equalsIgnoreCase("difficult")) {
+                    currentAdventure.users[i].group = "difficult";
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
     };
 
     /**
@@ -419,6 +450,14 @@
 
             if (!isNaN(parseInt(action))) {
                 joinHeist(sender, parseInt(action));
+                return;
+            }
+
+            if (action.equalsIgnoreCase('group') {
+                if (!joinGroup(sender, actionArg1))
+                {
+                  $.say($.whisperPrefix(sender) + "Unknown group", $.pointNameMultiple));
+                }
                 return;
             }
 
